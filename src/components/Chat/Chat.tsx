@@ -11,6 +11,7 @@ import philosopherImg from '../../assets/philosopher.png';
 import hoodlumImg from '../../assets/hoodlum.png';
 import detectiveImg from '../../assets/detective.png';
 import scientistImg from '../../assets/scientist.png';
+import { getApiBase } from '../../utils/getApiBase';
 
 type Message = {
   role: 'user' | 'assistant' | 'system';
@@ -27,6 +28,8 @@ const MODES = [
   { key: 'detective', name: 'detective', img: detectiveImg },
   { key: 'scientist', name: 'scientist', img: scientistImg },
 ];
+
+const apiBase = await getApiBase();
 
 export const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -47,7 +50,7 @@ export const Chat = () => {
     setInput('');
 
     try {
-      const res = await axios.post('http://localhost:3001/api/generate', {
+      const res = await axios.post(`${apiBase}/generate`, {
         messages: updated,
         mode,
       });
