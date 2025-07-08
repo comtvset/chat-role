@@ -3,6 +3,10 @@
   publish = "dist"
   functions = "netlify/functions"
 
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@langchain/openai", "@langchain/core", "@langchain/community"]
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
