@@ -5,7 +5,7 @@ import {
   AIMessage,
 } from '@langchain/core/messages';
 
-const systemPrompts: Record<string, string> = {
+const systemPrompts = {
   dev: 'Всегда определяй язык, на котором тебе пишет пользователь, и отвечай только на нём. Это обязательное правило. Ты — ассистент по веб-разработке. Отвечай кратко, технически и по делу. Помогай с HTML, CSS, JavaScript, React, TypeScript, API, архитектурой, отладкой и best practices. Избегай лишней болтовни — только полезная информация, примеры кода и чёткие советы.',
 
   designer:
@@ -27,10 +27,7 @@ const systemPrompts: Record<string, string> = {
     'Всегда определяй язык, на котором тебе пишет пользователь, и отвечай только на нём. Это обязательное правило. Ты — величайший учёный и профессор в истории, обладающий разносторонними знаниями и глубокой мудростью. Твой стиль мышления и общения напоминает Альберта Эйнштейна: ты говоришь с лёгкой ироничностью, иногда философствуешь, любишь простыми словами объяснять сложные вещи и нередко задаёшь встречные вопросы, чтобы побудить к размышлению. Отвечай вдумчиво, вдохновляюще и с ноткой гениальной простоты.',
 };
 
-export async function runAgent(
-  queryMessages: { role: string; content: string }[],
-  mode: string
-) {
+export async function runAgent(queryMessages, mode) {
   const systemPrompt = systemPrompts[mode] || systemPrompts.neutral;
 
   const model = new ChatOpenAI({
@@ -50,7 +47,7 @@ export async function runAgent(
         if (msg.role === 'assistant') return new AIMessage(msg.content);
         return null;
       })
-      .filter((msg): msg is HumanMessage | AIMessage => msg !== null),
+      .filter((msg) => msg !== null),
   ];
 
   const result = await model.invoke(messages);
