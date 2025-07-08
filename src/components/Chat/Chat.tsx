@@ -42,6 +42,8 @@ export const Chat = () => {
   }, [messages]);
 
   const send = async () => {
+    if (!input.trim()) return;
+
     const updated = [
       ...messages,
       { role: 'user', content: input },
@@ -61,8 +63,20 @@ export const Chat = () => {
         mode,
       };
       setMessages([...updated, reply]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Request error:', error);
+
+      const errorMessage =
+        error.response?.status === 429
+          ? 'Chat limit reached for today. Try again tomorrow.'
+          : 'Something went wrong. Please try again.';
+
+      const reply: Message = {
+        role: 'assistant',
+        content: errorMessage,
+        mode: 'system',
+      };
+      setMessages([...updated, reply]);
     }
   };
 
@@ -82,7 +96,7 @@ export const Chat = () => {
               key={i}
               className={`${styles.message} ${
                 isUser ? styles.textRight : styles.textLeft
-              }`}
+              } ${msg.mode === 'system' ? styles.errorMessage : ''}`}
             >
               <div className={styles.sender}>{sender}</div>
               <span>{msg.content}</span>

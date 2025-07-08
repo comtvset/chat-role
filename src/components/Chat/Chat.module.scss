@@ -109,3 +109,11 @@
       rgba(36, 36, 36, 0.8) 95%,
       rgba(36, 36, 36, 0) 100%);
 }
+
+.errorMessage {
+  color: red !important;
+
+  * {
+    color: red !important;
+  }
+}

@@ -19,9 +19,27 @@ export const handler = async (event, context) => {
     };
   } catch (error) {
     console.error('Error in generate function:', error);
+
+    const status = error?.status || error?.code;
+
+    if (status === 429) {
+      return {
+        statusCode: 429,
+        body: JSON.stringify({
+          error: 'Chat limit reached for today. Try again tomorrow.',
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+    }
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
+      body: JSON.stringify({ error: error.message || 'Internal Server Error' }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     };
   }
 };
