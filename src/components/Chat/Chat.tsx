@@ -1,0 +1,115 @@
+import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+
+import styles from './Chat.module.scss';
+import { Role } from '../Role/Role';
+
+import neutralImg from '../../assets/neutral.png';
+import developerImg from '../../assets/developer.png';
+import designerImg from '../../assets/designer.png';
+import philosopherImg from '../../assets/philosopher.png';
+import hoodlumImg from '../../assets/hoodlum.png';
+import detectiveImg from '../../assets/detective.png';
+import scientistImg from '../../assets/scientist.png';
+
+type Message = {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  mode?: string;
+};
+
+const MODES = [
+  { key: 'neutral', name: 'neutral', img: neutralImg },
+  { key: 'developer', name: 'developer', img: developerImg },
+  { key: 'designer', name: 'designer', img: designerImg },
+  { key: 'philosopher', name: 'philosopher', img: philosopherImg },
+  { key: 'hoodlum', name: 'hoodlum', img: hoodlumImg },
+  { key: 'detective', name: 'detective', img: detectiveImg },
+  { key: 'scientist', name: 'scientist', img: scientistImg },
+];
+
+export const Chat = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [mode, setMode] = useState('neutral');
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const send = async () => {
+    const updated = [
+      ...messages,
+      { role: 'user', content: input },
+    ] satisfies Message[];
+    setMessages(updated);
+    setInput('');
+
+    try {
+      const res = await axios.post('http://localhost:3001/api/generate', {
+        messages: updated,
+        mode,
+      });
+
+      const reply: Message = {
+        role: 'assistant',
+        content: res.data.reply,
+        mode,
+      };
+      setMessages([...updated, reply]);
+    } catch (error) {
+      console.error('Request error:', error);
+    }
+  };
+
+  return (
+    <div className={styles.wrapper}>
+      <div>
+        {messages.map((msg, i) => {
+          const isUser = msg.role === 'user';
+          const sender = isUser
+            ? 'You'
+            : msg.mode
+            ? msg.mode.charAt(0).toUpperCase() + msg.mode.slice(1)
+            : 'Assistant';
+
+          return (
+            <div
+              key={i}
+              className={`${styles.message} ${
+                isUser ? styles.textRight : styles.textLeft
+              }`}
+            >
+              <div className={styles.sender}>{sender}</div>
+              <span>{msg.content}</span>
+            </div>
+          );
+        })}
+        <div ref={bottomRef} />
+      </div>
+
+      <div className={styles.stickyInput}>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && send()}
+          className={styles.inputField}
+          placeholder="Ask anything..."
+        />
+
+        <div className={styles.rolesContainer}>
+          {MODES.map((role) => (
+            <Role
+              key={role.key}
+              img={role.img}
+              role={role.name}
+              active={mode === role.key}
+              onClick={() => setMode(role.key)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
