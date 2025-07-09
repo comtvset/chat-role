@@ -6,6 +6,18 @@
   margin: 0 auto;
 }
 
+@media (width <=599px) {
+  .wrapper {
+    max-width: 200px;
+    min-width: 200px;
+  }
+
+  .rolesContainer {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
 .chatContainer {
   flex: 1;
   max-height: 70vh;

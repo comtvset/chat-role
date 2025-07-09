@@ -12,7 +12,7 @@ function App() {
             alt="logo"
             className="logo"
           />
-          Interlocutor
+          BlaBlaBla
         </h1>
       </div>
       <Chat />
