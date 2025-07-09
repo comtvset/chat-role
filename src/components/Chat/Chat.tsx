@@ -67,7 +67,7 @@ export const Chat = () => {
       console.error('Request error:', error);
 
       const errorMessage =
-        error.response?.status === 429
+        apiBase === '/.netlify/functions' || error.response?.status === 429
           ? 'Chat limit reached for today. Try again tomorrow.'
           : 'Something went wrong. Please try again.';
 
