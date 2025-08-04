@@ -27,11 +27,11 @@ app.post('/api/generate', async (req: Request, res: Response) => {
   try {
     const response = await runAgent(messages, mode);
     res.json({ reply: response });
-  } catch (error: any) {
+  } catch (error) {
     const status = error?.status || error?.code;
 
     if (status === 429) {
-      console.log('Chat limit reached for today. Try again tomorrow.');
+      console.error('Chat limit reached for today. Try again tomorrow.');
       return res.status(429).json({
         error: 'Chat limit reached for today. Try again tomorrow.',
       });
