@@ -12,6 +12,7 @@ import hoodlumImg from '../../assets/hoodlum.png';
 import detectiveImg from '../../assets/detective.png';
 import scientistImg from '../../assets/scientist.png';
 import { getApiBase } from '../../utils/getApiBase';
+import { TransformLink } from '../../utils/TransformLink';
 
 type Message = {
   role: 'user' | 'assistant' | 'system';
@@ -63,13 +64,19 @@ export const Chat = () => {
         mode,
       };
       setMessages([...updated, reply]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Request error:', error);
 
-      const errorMessage =
-        apiBase === '/.netlify/functions' || error.response?.status === 429
-          ? 'Chat limit reached for today. Try again tomorrow.'
-          : 'Something went wrong. Please try again.';
+      let errorMessage = 'Something went wrong. Please try again.';
+
+      if (axios.isAxiosError(error)) {
+        if (
+          apiBase === '/.netlify/functions' ||
+          error.response?.status === 429
+        ) {
+          errorMessage = 'Chat limit reached for today. Try again tomorrow.';
+        }
+      }
 
       const reply: Message = {
         role: 'assistant',
@@ -99,7 +106,7 @@ export const Chat = () => {
               } ${msg.mode === 'system' ? styles.errorMessage : ''}`}
             >
               <div className={styles.sender}>{sender}</div>
-              <span>{msg.content}</span>
+              <span>{TransformLink(msg.content)}</span>
             </div>
           );
         })}
