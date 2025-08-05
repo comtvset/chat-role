@@ -11,6 +11,7 @@ import philosopherImg from '../../assets/philosopher.png';
 import hoodlumImg from '../../assets/hoodlum.png';
 import detectiveImg from '../../assets/detective.png';
 import scientistImg from '../../assets/scientist.png';
+import psychologistImg from '../../assets/psychologist.png';
 import { getApiBase } from '../../utils/getApiBase';
 import { TransformLink } from '../../utils/TransformLink';
 
@@ -28,6 +29,7 @@ const MODES = [
   { key: 'hoodlum', name: 'hoodlum', img: hoodlumImg },
   { key: 'detective', name: 'detective', img: detectiveImg },
   { key: 'scientist', name: 'scientist', img: scientistImg },
+  { key: 'psychologist', name: 'psychologist', img: psychologistImg },
 ];
 
 const apiBase = await getApiBase();

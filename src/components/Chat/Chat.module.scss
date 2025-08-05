@@ -32,6 +32,10 @@
   margin-bottom: 8px;
 }
 
+.message span {
+  white-space: pre-wrap;
+}
+
 .textRight {
   justify-content: flex-end;
 
