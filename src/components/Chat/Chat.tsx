@@ -13,7 +13,9 @@ import detectiveImg from '../../assets/detective.png';
 import scientistImg from '../../assets/scientist.png';
 import psychologistImg from '../../assets/psychologist.png';
 import { getApiBase } from '../../utils/getApiBase';
-import { TransformLink } from '../../utils/TransformLink';
+
+import TextareaAutosize from 'react-textarea-autosize';
+import { MemoizedMessage } from '../MemoizedMessage/MemoizedMessage';
 
 type Message = {
   role: 'user' | 'assistant' | 'system';
@@ -101,27 +103,31 @@ export const Chat = () => {
             : 'Assistant';
 
           return (
-            <div
+            <MemoizedMessage
               key={i}
-              className={`${styles.message} ${
-                isUser ? styles.textRight : styles.textLeft
-              } ${msg.mode === 'system' ? styles.errorMessage : ''}`}
-            >
-              <div className={styles.sender}>{sender}</div>
-              <span>{TransformLink(msg.content)}</span>
-            </div>
+              msg={msg}
+              isUser={isUser}
+              sender={sender}
+              index={i}
+              styles={styles}
+            />
           );
         })}
         <div ref={bottomRef} />
       </div>
 
       <div className={styles.stickyInput}>
-        <input
+        <TextareaAutosize
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && send()}
-          className={styles.inputField}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              send();
+            }
+          }}
           placeholder="Ask anything..."
+          className={styles.inputField}
         />
 
         <div className={styles.rolesContainer}>
