@@ -16,6 +16,7 @@ import { getApiBase } from '../../utils/getApiBase';
 
 import TextareaAutosize from 'react-textarea-autosize';
 import { MemoizedMessage } from '../MemoizedMessage/MemoizedMessage';
+import { ButtonSend } from '../ButtonSend/ButtonSend';
 
 type Message = {
   role: 'user' | 'assistant' | 'system';
@@ -117,18 +118,22 @@ export const Chat = () => {
       </div>
 
       <div className={styles.stickyInput}>
-        <TextareaAutosize
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              send();
-            }
-          }}
-          placeholder="Ask anything..."
-          className={styles.inputField}
-        />
+        <div className={styles.input}>
+          <TextareaAutosize
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                send();
+              }
+            }}
+            placeholder="Ask anything..."
+            className={styles.inputField}
+          />
+
+          <ButtonSend onClick={send} />
+        </div>
 
         <div className={styles.rolesContainer}>
           {MODES.map((role) => (
