@@ -6,13 +6,13 @@ function App() {
     <>
       <div className="stickyHeader">
         <h1 className="header user-select-none">
-          AI
+          Chat
           <img
             src={'/AI.png'}
             alt="logo"
             className="logo"
           />
-          BlaBlaBla
+          Role
         </h1>
       </div>
       <Chat />
