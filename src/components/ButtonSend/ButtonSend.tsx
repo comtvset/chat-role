@@ -5,12 +5,13 @@ import Arrow from '../../assets/arrow-right.svg?react';
 
 type ButtonSendProps = {
   onClick: () => void;
+  disabled?: boolean;
 };
 
-export const ButtonSend: React.FC<ButtonSendProps> = ({ onClick }) => {
+export const ButtonSend: React.FC<ButtonSendProps> = ({ onClick, disabled }) => {
   return (
     <>
-      <button onClick={onClick} className={styles.button}>
+      <button onClick={onClick} disabled={disabled} className={styles.button}>
         <Arrow className={styles.icon} />
       </button>
     </>

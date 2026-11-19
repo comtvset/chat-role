@@ -18,6 +18,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { MemoizedMessage } from '../MemoizedMessage/MemoizedMessage';
 import { ButtonSend } from '../ButtonSend/ButtonSend';
 import { ImageModal } from '../Modal/ImageModal';
+import { Loader } from '../Loader/Loader';
 
 type Message = {
   role: 'user' | 'assistant' | 'system';
@@ -47,6 +48,7 @@ export const Chat = () => {
   const [input, setInput] = useState('');
   const [mode, setMode] = useState('neutral');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const handleImageClick = (src: string) => {
@@ -70,6 +72,8 @@ export const Chat = () => {
     ] satisfies Message[];
     setMessages(updated);
     setInput('');
+
+    setLoading(true);
 
     try {
       const apiMessages = updated.map(({ role, content }) => ({
@@ -110,6 +114,8 @@ export const Chat = () => {
         mode: 'system',
       };
       setMessages([...updated, reply]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,11 +146,11 @@ export const Chat = () => {
       </div>
 
       {selectedImage && (
-        <ImageModal
-          isOpen
-          src={selectedImage}
-          onClose={handleCloseModal}
-        />
+        <ImageModal isOpen src={selectedImage} onClose={handleCloseModal} />
+      )}
+
+      {loading && (
+        <Loader />
       )}
 
       <div className={styles.stickyInput}>
@@ -160,9 +166,10 @@ export const Chat = () => {
             }}
             placeholder="Ask anything..."
             className={styles.inputField}
+            disabled={loading}
           />
 
-          <ButtonSend onClick={send} />
+          <ButtonSend onClick={send} disabled={loading} />
         </div>
 
         <div className={styles.rolesContainer}>

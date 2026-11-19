@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import './ImageModal.css';
+import styles from './ImageModal.module.scss';
 import { Download, X } from 'lucide-react';
 
 export interface ImageModalProps {
@@ -30,21 +30,21 @@ export const ImageModal = ({ isOpen, onClose, src, alt = 'Image' }: ImageModalPr
 
   return (
     <div
-      className="image-modal-overlay"
+      className={styles.overlay}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label="Image preview"
     >
-      <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="image-modal-close" onClick={onClose} aria-label="Close">
+      <div className={styles.content} onClick={(e) => e.stopPropagation()}>
+        <button className={styles.close} onClick={onClose} aria-label="Close">
           <X size={22} />
         </button>
-        <img src={src} alt={alt} className="image-modal-img" />
+        <img src={src} alt={alt} className={styles.image} />
         <a
           href={src}
           download
-          className="image-modal-download"
+          className={styles.download}
           target="_blank"
           rel="noopener noreferrer"
         >

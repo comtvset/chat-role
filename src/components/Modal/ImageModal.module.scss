@@ -1,4 +1,4 @@
-.image-modal-overlay {
+.overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -11,7 +11,7 @@
   animation: imageModalFadeIn 0.2s ease;
 }
 
-.image-modal-content {
+.content {
   position: relative;
   max-width: 95vw;
   max-height: 90vh;
@@ -20,7 +20,7 @@
   align-items: center;
 }
 
-.image-modal-img {
+.image {
   max-width: 100%;
   max-height: 80vh;
   width: auto;
@@ -30,7 +30,7 @@
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
-.image-modal-close {
+.close {
   position: absolute;
   top: 0;
   right: 0;
@@ -44,22 +44,21 @@
   padding: 0 10px;
   z-index: 10;
   transition: all 0.3s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:focus,
+  &:active,
+  &:focus-visible {
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
 }
 
-.image-modal-close:hover {
-  opacity: 0.8;
-  transition: all 0.3s ease;
-}
-
-.image-modal-close:focus,
-.image-modal-close:active,
-.image-modal-close:focus-visible {
-  outline: none;
-  border: none;
-  box-shadow: none;
-}
-
-.image-modal-download {
+.download {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,27 +69,14 @@
   background: rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
   margin: 10px;
-
   position: absolute;
-  bottom: -40px;
-  right: 0;
   bottom: 0;
-}
-
-/* position: absolute;
-  bottom: -40px;
   right: 0;
-  color: #fff;
-  text-decoration: none;
-  font-size: 14px;
-  padding: 6px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 4px;
-  z-index: 1001; */
 
-.image-modal-download:hover {
-  background: rgba(255, 255, 255, 0.3);
-  color: rgb(0, 0, 0);
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: rgb(0, 0, 0);
+  }
 }
 
 @keyframes imageModalFadeIn {
