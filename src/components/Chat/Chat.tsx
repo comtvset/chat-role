@@ -17,6 +17,8 @@ import { getApiBase } from '../../utils/getApiBase';
 import TextareaAutosize from 'react-textarea-autosize';
 import { MemoizedMessage } from '../MemoizedMessage/MemoizedMessage';
 import { ButtonSend } from '../ButtonSend/ButtonSend';
+import { ImageModal } from '../Modal/ImageModal';
+import { Loader } from '../Loader/Loader';
 
 type Message = {
   role: 'user' | 'assistant' | 'system';
@@ -45,11 +47,30 @@ export const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [mode, setMode] = useState('neutral');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const restoreInputFocus = useRef(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const handleImageClick = (src: string) => {
+    setSelectedImage(src);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage(null);
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    if (!loading && restoreInputFocus.current) {
+      inputRef.current?.focus();
+      restoreInputFocus.current = false;
+    }
+  }, [loading]);
 
   const send = async () => {
     if (!input.trim()) return;
@@ -60,6 +81,9 @@ export const Chat = () => {
     ] satisfies Message[];
     setMessages(updated);
     setInput('');
+
+    restoreInputFocus.current = true;
+    setLoading(true);
 
     try {
       const apiMessages = updated.map(({ role, content }) => ({
@@ -100,6 +124,8 @@ export const Chat = () => {
         mode: 'system',
       };
       setMessages([...updated, reply]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,15 +148,25 @@ export const Chat = () => {
               sender={sender}
               index={i}
               styles={styles}
+              onImageClick={handleImageClick}
             />
           );
         })}
         <div ref={bottomRef} />
       </div>
 
+      {selectedImage && (
+        <ImageModal isOpen src={selectedImage} onClose={handleCloseModal} />
+      )}
+
+      {loading && (
+        <Loader />
+      )}
+
       <div className={styles.stickyInput}>
         <div className={styles.input}>
           <TextareaAutosize
+            ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
@@ -141,9 +177,10 @@ export const Chat = () => {
             }}
             placeholder="Ask anything..."
             className={styles.inputField}
+            disabled={loading}
           />
 
-          <ButtonSend onClick={send} />
+          <ButtonSend onClick={send} disabled={loading} />
         </div>
 
         <div className={styles.rolesContainer}>

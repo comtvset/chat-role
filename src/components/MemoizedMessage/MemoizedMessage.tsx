@@ -7,6 +7,7 @@ export const MemoizedMessage = memo(function MemoizedMessage({
   sender,
   index,
   styles,
+  onImageClick,
 }: {
   msg: {
     content: string;
@@ -21,13 +22,14 @@ export const MemoizedMessage = memo(function MemoizedMessage({
   sender: string;
   index: number;
   styles: Record<string, string>;
+  onImageClick?: (src: string) => void;
 }) {
   return (
     <div
       key={index}
-      className={`${styles.message} ${
-        isUser ? styles.textRight : styles.textLeft
-      } ${msg.mode === 'system' ? styles.errorMessage : ''}`}
+      className={`${styles.message} ${isUser ? styles.textRight : styles.textLeft} ${
+        msg.mode === 'system' ? styles.errorMessage : ''
+      }`}
     >
       <div className={styles.sender}>{sender}</div>
 
@@ -36,10 +38,13 @@ export const MemoizedMessage = memo(function MemoizedMessage({
           {TransformLink(msg.content)}
 
           {msg.image && (
-            <div className={styles.generatedImage}>
-              <a href={msg.image.src} target="_blank" rel="noopener noreferrer">
-                <img src={msg.image.src} alt="Generated image" />
-              </a>
+            <div
+              className={styles.generatedImage}
+              onClick={() => {
+                if (msg.image) onImageClick?.(msg.image.src);
+              }}
+            >
+              <img src={msg.image.src} alt="Generated image" />
             </div>
           )}
         </span>
