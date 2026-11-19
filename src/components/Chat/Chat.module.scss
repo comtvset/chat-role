@@ -65,7 +65,9 @@
   border: 1.5px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
   outline: none;
   box-sizing: border-box;
   margin: 20px 0;
@@ -100,7 +102,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   color: #888;
-  margin: 2px 14px 0 14px;
+  margin: 10px 14px 0 14px;
 }
 
 .stickyInput {
@@ -113,11 +115,13 @@
   z-index: 5;
   flex-direction: column;
 
-  background: linear-gradient(to top,
-      #242424 0%,
-      #242424 70%,
-      rgba(36, 36, 36, 0.8) 95%,
-      rgba(36, 36, 36, 0) 100%);
+  background: linear-gradient(
+    to top,
+    #242424 0%,
+    #242424 70%,
+    rgba(36, 36, 36, 0.8) 95%,
+    rgba(36, 36, 36, 0) 100%
+  );
 }
 
 .input {
@@ -128,5 +132,21 @@
 .errorMessage {
   * {
     color: red !important;
+  }
+}
+
+.generatedImage {
+  width: 100%;
+  margin: 9px 0;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
+  a {
+    display: block;
   }
 }

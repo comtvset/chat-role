@@ -8,11 +8,11 @@ export const handler = async (event, context) => {
 
     const { messages, mode } = JSON.parse(event.body || '{}');
 
-    const response = await runAgent(messages, mode);
+    const { reply, image } = await runAgent(messages, mode);
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ reply: response }),
+      body: JSON.stringify({ reply, image }),
       headers: {
         'Content-Type': 'application/json',
       },

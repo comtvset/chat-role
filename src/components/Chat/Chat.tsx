@@ -22,6 +22,10 @@ type Message = {
   role: 'user' | 'assistant' | 'system';
   content: string;
   mode?: string;
+  image?: {
+    src: string;
+    mediaType: string;
+  } | null;
 };
 
 const MODES = [
@@ -58,8 +62,13 @@ export const Chat = () => {
     setInput('');
 
     try {
+      const apiMessages = updated.map(({ role, content }) => ({
+        role,
+        content,
+      }));
+
       const res = await axios.post(`${apiBase}/generate`, {
-        messages: updated,
+        messages: apiMessages,
         mode,
       });
 
@@ -67,7 +76,9 @@ export const Chat = () => {
         role: 'assistant',
         content: res.data.reply,
         mode,
+        image: res.data.image,
       };
+
       setMessages([...updated, reply]);
     } catch (error: unknown) {
       console.error('Request error:', error);
@@ -100,8 +111,8 @@ export const Chat = () => {
           const sender = isUser
             ? 'You'
             : msg.mode
-            ? msg.mode.charAt(0).toUpperCase() + msg.mode.slice(1)
-            : 'Assistant';
+              ? msg.mode.charAt(0).toUpperCase() + msg.mode.slice(1)
+              : 'Assistant';
 
           return (
             <MemoizedMessage
