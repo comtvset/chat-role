@@ -17,6 +17,7 @@ import { getApiBase } from '../../utils/getApiBase';
 import TextareaAutosize from 'react-textarea-autosize';
 import { MemoizedMessage } from '../MemoizedMessage/MemoizedMessage';
 import { ButtonSend } from '../ButtonSend/ButtonSend';
+import { ImageModal } from '../Modal/ImageModal';
 
 type Message = {
   role: 'user' | 'assistant' | 'system';
@@ -45,7 +46,16 @@ export const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [mode, setMode] = useState('neutral');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const handleImageClick = (src: string) => {
+    setSelectedImage(src);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage(null);
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -122,11 +132,20 @@ export const Chat = () => {
               sender={sender}
               index={i}
               styles={styles}
+              onImageClick={handleImageClick}
             />
           );
         })}
         <div ref={bottomRef} />
       </div>
+
+      {selectedImage && (
+        <ImageModal
+          isOpen
+          src={selectedImage}
+          onClose={handleCloseModal}
+        />
+      )}
 
       <div className={styles.stickyInput}>
         <div className={styles.input}>
