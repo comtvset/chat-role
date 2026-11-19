@@ -49,6 +49,8 @@ export const Chat = () => {
   const [mode, setMode] = useState('neutral');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const restoreInputFocus = useRef(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const handleImageClick = (src: string) => {
@@ -63,6 +65,13 @@ export const Chat = () => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    if (!loading && restoreInputFocus.current) {
+      inputRef.current?.focus();
+      restoreInputFocus.current = false;
+    }
+  }, [loading]);
+
   const send = async () => {
     if (!input.trim()) return;
 
@@ -73,6 +82,7 @@ export const Chat = () => {
     setMessages(updated);
     setInput('');
 
+    restoreInputFocus.current = true;
     setLoading(true);
 
     try {
@@ -156,6 +166,7 @@ export const Chat = () => {
       <div className={styles.stickyInput}>
         <div className={styles.input}>
           <TextareaAutosize
+            ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
