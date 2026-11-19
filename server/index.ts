@@ -25,20 +25,32 @@ app.post('/api/generate', async (req: Request, res: Response) => {
   const { messages, mode } = req.body;
 
   try {
-    const response = await runAgent(messages, mode);
-    res.json({ reply: response });
-  } catch (error) {
-    const status = error?.status || error?.code;
+    const result = await runAgent(messages, mode);
+    return res.json(result);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      const status =
+        (error as Error & { status?: number; code?: number }).status ||
+        (error as Error & { code?: number }).code;
 
-    if (status === 429) {
-      console.error('Chat limit reached for today. Try again tomorrow.');
-      return res.status(429).json({
-        error: 'Chat limit reached for today. Try again tomorrow.',
+      if (status === 429) {
+        console.error('Chat limit reached for today. Try again tomorrow.');
+
+        return res.status(429).json({
+          error: 'Chat limit reached for today. Try again tomorrow.',
+        });
+      }
+
+      console.error('Error during agent response:', error);
+
+      return res.status(500).json({
+        error: error.message,
       });
     }
 
-    console.error('Error during agent response:', error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({
+      error: 'Unknown server error',
+    });
   }
 });
 

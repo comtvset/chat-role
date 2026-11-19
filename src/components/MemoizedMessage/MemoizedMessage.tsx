@@ -8,7 +8,15 @@ export const MemoizedMessage = memo(function MemoizedMessage({
   index,
   styles,
 }: {
-  msg: { content: string; role: string; mode?: string };
+  msg: {
+    content: string;
+    role: string;
+    mode?: string;
+    image?: {
+      src: string;
+      mediaType: string;
+    } | null;
+  };
   isUser: boolean;
   sender: string;
   index: number;
@@ -22,7 +30,20 @@ export const MemoizedMessage = memo(function MemoizedMessage({
       } ${msg.mode === 'system' ? styles.errorMessage : ''}`}
     >
       <div className={styles.sender}>{sender}</div>
-      <span>{TransformLink(msg.content)}</span>
+
+      {msg.content && (
+        <span>
+          {TransformLink(msg.content)}
+
+          {msg.image && (
+            <div className={styles.generatedImage}>
+              <a href={msg.image.src} target="_blank" rel="noopener noreferrer">
+                <img src={msg.image.src} alt="Generated image" />
+              </a>
+            </div>
+          )}
+        </span>
+      )}
     </div>
   );
 });
